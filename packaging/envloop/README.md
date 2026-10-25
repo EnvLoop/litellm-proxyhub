@@ -6,13 +6,14 @@ This distribution pins upstream `v1.106.3` at
 `v1.106.3-envloop.1`. Existing main and upstream tags remain unchanged.
 
 The package contains the source-built LiteLLM SDK, its native Rust bridge, FastAPI, Uvicorn
-and the release-locked orjson required by the native streaming helper. EnvPlatform uploads its per-Trial HTTP facade and configuration at
+and the release-locked orjson/soundfile dependency closure required by native stream
+logging imports. EnvPlatform uploads its per-Trial HTTP facade and configuration at
 runtime. No Enterprise extras or separate Admin UI/database service are enabled. The SDK
 wheel retains its regular bundled assets. No provider keys or runtime tokens are
 installed into this package. MIT licensing remains in `/opt/envloop-proxyhub/LICENSE`.
 
 `requirements.txt` is a hash-pinned subset of upstream `uv.lock`: the SDK plus
-FastAPI/Uvicorn/orjson and their dependency closure. `sdk-requirements.txt` is the upstream
+FastAPI/Uvicorn/orjson/soundfile and their dependency closure. `sdk-requirements.txt` is the upstream
 SDK export; `requirements.in` documents the additional runtime roots. Package
 versions are inherited from the release lock. Base Python, Rust and uv images are
 pinned by registry digest in the Dockerfile. The build backend remains upstream's

@@ -17,7 +17,7 @@ COPY .cargo ./.cargo
 RUN rm litellm/proxy/enterprise && python -c "from pathlib import Path; assert all(p.exists() for p in Path('litellm').rglob('*') if p.is_symlink())"
 RUN --mount=type=cache,id=envloop-litellm-1.106.3-target,target=/src/litellm-rust/target uv build --wheel --out-dir /wheels --exclude-newer-package maturin=2026-10-25T23:59:59Z
 COPY packaging/envloop ./packaging/envloop
-RUN uv venv /opt/envloop-proxyhub && uv --no-config pip install --python /opt/envloop-proxyhub/bin/python --require-hashes -r packaging/envloop/requirements.txt && uv --no-config pip install --python /opt/envloop-proxyhub/bin/python --no-deps /wheels/*.whl
+RUN uv venv /opt/envloop-proxyhub && uv --no-config pip install --python /opt/envloop-proxyhub/bin/python --require-hashes -r packaging/envloop/requirements.txt && uv --no-config pip install --python /opt/envloop-proxyhub/bin/python --no-deps /wheels/*.whl && LITELLM_LOCAL_MODEL_COST_MAP=True /opt/envloop-proxyhub/bin/python -c "import litellm.llms.anthropic.pass_through.messages.streaming_iterator"
 FROM ${PYTHON_IMAGE}
 ARG SOURCE_REVISION
 ARG RELEASE_TAG=v1.106.3-envloop.1
