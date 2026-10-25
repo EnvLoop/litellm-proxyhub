@@ -47,3 +47,10 @@ can apply the reviewed source manifest and final OCI revision to the already tes
 local compiled image. Verify that image's upstream source and image ID first;
 this step never substitutes different compiled code. Record both build commands
 and the final registry digest in the release notes.
+
+The release build uses thin LTO and 16 codegen units to bound linking overhead.
+Native compilation is cached across packaging retries. The upstream-excluded
+`litellm/proxy/enterprise` symlink is removed in the SDK-only build context before
+wheel traversal; Enterprise source is not imported to satisfy that link. A symlink
+preflight runs before compilation. Runtime capacity/performance still requires
+sandbox validation.

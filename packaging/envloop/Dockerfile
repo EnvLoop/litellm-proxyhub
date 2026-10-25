@@ -7,15 +7,16 @@ FROM ${PYTHON_IMAGE} AS builder
 COPY --from=rust /usr/local/cargo /usr/local/cargo
 COPY --from=rust /usr/local/rustup /usr/local/rustup
 COPY --from=uv /uv /usr/local/bin/uv
-ENV PATH=/usr/local/cargo/bin:$PATH RUSTUP_HOME=/usr/local/rustup CARGO_HOME=/usr/local/cargo
+ENV PATH=/usr/local/cargo/bin:$PATH RUSTUP_HOME=/usr/local/rustup CARGO_HOME=/usr/local/cargo CARGO_PROFILE_RELEASE_LTO=thin CARGO_PROFILE_RELEASE_CODEGEN_UNITS=16
 RUN apt-get update && apt-get install -y --no-install-recommends gcc libc6-dev pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
 COPY pyproject.toml uv.lock README.md LICENSE rust-toolchain.toml ./
 COPY litellm-rust ./litellm-rust
 COPY litellm ./litellm
 COPY .cargo ./.cargo
+RUN rm litellm/proxy/enterprise && python -c "from pathlib import Path; assert all(p.exists() for p in Path('litellm').rglob('*') if p.is_symlink())"
+RUN --mount=type=cache,id=envloop-litellm-1.106.3-target,target=/src/litellm-rust/target uv build --wheel --out-dir /wheels --exclude-newer-package maturin=2026-10-25T23:59:59Z
 COPY packaging/envloop ./packaging/envloop
-RUN uv build --wheel --out-dir /wheels --exclude-newer-package maturin=2026-10-25T23:59:59Z
 RUN uv venv /opt/envloop-proxyhub && uv pip install --python /opt/envloop-proxyhub/bin/python --require-hashes -r packaging/envloop/requirements.txt && uv pip install --python /opt/envloop-proxyhub/bin/python --no-deps /wheels/*.whl
 FROM ${PYTHON_IMAGE}
 ARG SOURCE_REVISION
