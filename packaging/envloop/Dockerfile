@@ -20,7 +20,7 @@ RUN uv venv /opt/envloop-proxyhub && uv pip install --python /opt/envloop-proxyh
 FROM ${PYTHON_IMAGE}
 ARG SOURCE_REVISION
 ARG RELEASE_TAG=v1.106.3-envloop.1
-LABEL org.opencontainers.image.source=https://github.com/EnvLoop/litellm org.opencontainers.image.revision=${SOURCE_REVISION} org.opencontainers.image.version=${RELEASE_TAG} org.opencontainers.image.licenses=MIT
+LABEL org.opencontainers.image.source=https://github.com/EnvLoop/litellm-proxyhub org.opencontainers.image.revision=${SOURCE_REVISION} org.opencontainers.image.version=${RELEASE_TAG} org.opencontainers.image.licenses=MIT
 COPY --from=builder /opt/envloop-proxyhub /opt/envloop-proxyhub
 COPY LICENSE /opt/envloop-proxyhub/LICENSE
 COPY packaging/envloop/source.json /opt/envloop-proxyhub/source.json
