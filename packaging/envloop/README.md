@@ -56,3 +56,10 @@ Native compilation is cached across packaging retries. The upstream-excluded
 wheel traversal; Enterprise source is not imported to satisfy that link. A symlink
 preflight runs before compilation. Runtime capacity/performance still requires
 sandbox validation.
+
+The fork defers importing the full proxy request processor until streaming cost
+injection is enabled. Native SDK streaming uses the existing passthrough path
+without loading proxy budget/database services; proxy cost injection retains the
+same processor when enabled. The SDK-only module import is checked in the image
+build, and nonstream/SSE/failure/drain are verified against a synthetic upstream
+before publication.
